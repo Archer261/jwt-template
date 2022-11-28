@@ -1,11 +1,17 @@
+// THIS SERVER HANDLES DATABASE ROUTES FOR SENDING AND RECEIVING DATA UNRELATED TO TOKENS
+
 const express = require('express');
+
+// Initiate express server
 const app = express();
 
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
+
+// Parse incoming JSON payloads
 app.use(express.json())
 
-// Test Login Data
+// Test User Data
 const posts = [
     {
         username: 'Joseph',
@@ -17,17 +23,12 @@ const posts = [
     }
 ]
 
+// Retrieve test data for logged in user
 app.get('/posts', authenticateToken, (req, res) => {
     res.json(posts.filter(post => post.username === req.user.name))
 })
 
-app.post('/login', (req, res) => {
-    const username = req.body.username
-    const user = { name: username }
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-    res.json({ accessToken: accessToken })
-})
-
+// Matches incoming token with secret access token
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]
